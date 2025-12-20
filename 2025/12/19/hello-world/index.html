@@ -197,11 +197,22 @@
     container: document.getElementById('aplayer'),
     fixed: true,
     mini: true,
-    autoplay: true
+    autoplay: true,
+    theme: '#b7daff' // 可自定义主题
   });
-  document.addEventListener('click', () => {
-    ap.play();
-  }, { once: true });
+
+  // 强制页面加载时自动播放，首先尝试播放
+  function tryAutoplay() {
+    ap.play().catch((err) => {
+      // 如果播放失败（由于浏览器限制），添加用户交互监听
+      document.addEventListener('click', () => ap.play(), { once: true });
+      document.addEventListener('touchstart', () => ap.play(), { once: true });
+      console.log('自动播放失败，已绑定点击事件触发播放');
+    });
+  }
+
+  // 页面加载完成后触发自动播放
+  document.addEventListener('DOMContentLoaded', tryAutoplay);
 </script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
